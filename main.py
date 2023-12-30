@@ -25,7 +25,7 @@ def write_list_to_file(file_path, data_list):
                 print("Unable to print element due to encoding issues.", file=output_file)
     
 
-service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\geckodriver.exe")
+service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
 
 driver = webdriver.Firefox(service=service)
 driver.get('https://web.whatsapp.com/')
