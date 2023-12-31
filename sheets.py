@@ -56,7 +56,10 @@ def readMyMsgAtCol(column_to_search):
     row = 1
     cell = None
 
-    while not cell:
+    # Set the maximum row to iterate over
+    max_row = 11
+
+    while not cell and row <= max_row:
         # Find the cell in the current row
         cell = sheet.cell(row, column_to_search)
 
@@ -64,6 +67,10 @@ def readMyMsgAtCol(column_to_search):
         if not cell.value:
             cell = None  # Reset cell to None if the cell is empty
             row += 1  # Move to the next row
+    print(row)
+
+    if row == 12:
+        return False
 
     # Prepare the information as a string
     cell_info = f"The first non-empty cell in column {column_to_search} is at row {cell.row}, column {cell.col}, and has the value: {cell.value}"
@@ -91,13 +98,26 @@ def readMyMsgAtCol(column_to_search):
     with open("write_CMD_date.txt", "w", encoding="utf-8") as file:
         file.write(str(cell_date.value))
 
-    if cell.value == None:
-        return False
-    else:
-        return True
+
+    return True
+
 
 def delete_col(col):
+    # Specify the column number you want to delete (e.g., column B)
+    column_to_delete = col  # Change this to your desired column number
+
+    # Get the number of rows in the sheet
     num_rows = sheet.row_count
 
-    for i in num_rows:
-        sheet.update_cell(i,col, '')
+    # Create an empty list to store the new values for the specified column
+    empty_column_values = [[""] * num_rows]
+
+    # Create a ValueRange object with the empty values
+    value_range = {"values": empty_column_values}
+
+    # Specify the range to update (e.g., "B1:B" for column B)
+    range_to_update = f"{chr(ord('A') + column_to_delete - 1)}1:{chr(ord('A') + column_to_delete)}{num_rows}"
+
+    # Update the specified range with the empty values
+    sheet.values_update(range_to_update, params=value_range)
+
