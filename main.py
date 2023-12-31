@@ -116,7 +116,7 @@ while True:
             write_to_chat_and_send(my_msg)
             # Delete contents from the write_CMD files to wait for another call by writing to it.
             reset_WCMD_contents()
-            #sheets.delete_col(5)
+            sheets.delete_col(5)
 
     
     for i in range(1, 12):
@@ -163,9 +163,9 @@ while True:
     write_list_to_file("date.txt", date_list)
 
     sheets.write_sheet()
-    
+
     first_iteration = False
 
     # This is the sleep before checking for msg_CMD it should be about 40 or 50 seconds but i'll see. 
-    time.sleep(10)
+    time.sleep(20)
 
