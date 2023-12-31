@@ -34,10 +34,38 @@ combined_data = list(zip(output_data, msg_data, sender_data, date_data))
 sorted_data = sorted(combined_data, key=lambda x: x[3], reverse=True)
 
 # Insert header row
-sorted_data.insert(0, ["Name", "Msg", "Sender", "Date", "Write_CMD"])
+sorted_data.insert(0, ["Name", "Msg", "Sender", "Date"])
 
 # Clear the existing data in the sheet
 #sheet.clear()
 
 # Update the sheet with the sorted data
 sheet.update("A1:E" + str(len(sorted_data)), sorted_data)
+
+# Specify the column to search (let's say column E)
+column_to_search = 5
+
+# Loop over each row in the specified column until finding the first non-empty cell
+row = 1
+cell = None
+
+while not cell:
+    # Find the cell in the current row
+    cell = sheet.cell(row, column_to_search)
+
+    # Check if the cell is empty
+    if not cell.value:
+        cell = None  # Reset cell to None if the cell is empty
+        row += 1  # Move to the next row
+
+# Prepare the information as a string
+cell_info = f"The first non-empty cell in column {column_to_search} is at row {cell.row}, column {cell.col}, and has the value: {cell.value}"
+
+cell_chat = sheet.cell(cell.row,1)
+
+# Print the information to the console
+print(cell_info)
+
+# Write the information to a text file
+with open("write_CMD.txt", "w", encoding="utf-8") as file:
+    file.write(str(cell_chat.value) + "|" + str(cell.value))

@@ -14,6 +14,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys  # Import Keys
 
 
 def write_list_to_file(file_path, data_list):
@@ -32,6 +34,8 @@ driver.get('https://web.whatsapp.com/')
 
 driver.implicitly_wait(50)
 
+first_iteration = True
+
 while True:
 
     elements_list = []
@@ -41,6 +45,66 @@ while True:
 
     # Loop from 1 to 5
 
+    if not first_iteration:
+        # Read the content of the text file
+        with open("write_CMD.txt", "r", encoding="utf-8") as file:
+            line = file.readline()
+
+        # Split the line into two values at the first space
+        values = line.strip().split('|', 1)
+
+        # Check if there are exactly two values
+        if len(values) == 2:
+            chat, my_msg = values
+            print("Variable 1:", chat)
+            print("Variable 2:", my_msg)
+        else:
+            print("Invalid format in the text file.")
+
+        # Replace 'your_title_value' with the actual value you want to search for
+        title_value_to_search = chat
+
+        # Construct the XPath using the title attribute
+        xpath_expression = f"//span[@title='{title_value_to_search}']"
+
+        # Find the element using the constructed XPath
+        driver.find_element(By.XPATH, xpath_expression).click()
+
+        time.sleep(4)
+        
+        # Create an ActionChains object
+        actions = ActionChains(driver)
+
+        # Type your message
+        actions.send_keys(my_msg, Keys.RETURN)
+
+        # Press Enter
+        #actions.send_keys(msg, Keys.RETURN)  # Include any other keys you want to simulate
+
+        # Perform the actions
+        actions.perform()
+
+        # # Replace 'your_class_name' with the actual class name you want to search for
+        # class_name_to_search = "to2l77zo"
+
+        # # Find the element using the class name with XPath
+        # xpath_expression = f"/html/body/div[1]/div/div[2]/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div[2]/div[1]"
+        # # Find the element using the constructed XPath
+        # driver.find_element(By.XPATH, xpath_expression).send_keys(my_msg)
+        
+        
+        # data_icon_value_to_search = "send"
+
+        # # Construct the XPath using the data-icon attribute
+        # xpath_expression = f"//span[@data-icon='{data_icon_value_to_search}']"
+
+        # # Find the element using the constructed XPath
+        # driver.find_element(By.XPATH, xpath_expression).click()
+
+
+
+    
+    
     for i in range(1, 12):
         # Construct the XPath dynamically
         xpath_person = f"/html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[{i}]/div/div/div/div[2]/div[1]/div[1]/div/span"
@@ -92,7 +156,8 @@ while True:
     with open("sheets.py") as f:
         exec(f.read())
 
-    time.sleep(45)
+    first_iteration = False
+    time.sleep(10)
 
 # /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[1]/div/div/div/div[2]/div[1]/div[1]/div/span
 # /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[5]/div/div/div/div[2]/div[1]/div[1]/span
@@ -137,3 +202,4 @@ while True:
 # /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[7]/div/div/div/div[2]/div[2]/div[2]/span[1]/div[2]/span
 # /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[10]/div/div/div/div[2]/div[2]/div[2]/span[1]/div/span
 # /html/body/div[1]/div/span[5]
+
