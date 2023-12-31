@@ -101,23 +101,9 @@ def readMyMsgAtCol(column_to_search):
 
     return True
 
-
 def delete_col(col):
-    # Specify the column number you want to delete (e.g., column B)
-    column_to_delete = col  # Change this to your desired column number
+    empty_strings = [[""] for _ in range(12)]  # Create a list of 12 lists, each containing an empty string
+    range_to_update = f"E1:E12"  # Specify the range for column E
 
-    # Get the number of rows in the sheet
-    num_rows = sheet.row_count
-
-    # Create an empty list to store the new values for the specified column
-    empty_column_values = [[""] * num_rows]
-
-    # Create a ValueRange object with the empty values
-    value_range = {"values": empty_column_values}
-
-    # Specify the range to update (e.g., "B1:B" for column B)
-    range_to_update = f"{chr(ord('A') + column_to_delete - 1)}1:{chr(ord('A') + column_to_delete)}{num_rows}"
-
-    # Update the specified range with the empty values
-    sheet.values_update(range_to_update, params=value_range)
+    sheet.update(range_to_update, empty_strings)
 

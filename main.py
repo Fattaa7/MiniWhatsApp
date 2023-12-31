@@ -10,6 +10,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys  # Import Keys
 
+#######     https://docs.google.com/spreadsheets/d/10yJZ7lQGKxqKY0664oF3XAvDDcZvqvwv5eXNia05g7A/edit#gid=0
 
 def write_list_to_file(file_path, data_list):
     with open(file_path, "w", encoding="utf-8") as output_file:
@@ -82,12 +83,12 @@ def delete_file_contents(file_name):
 ##################################################################################################################################
 
 #PC verison
-#service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
-#driver = webdriver.Firefox(service=service)
+service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
+driver = webdriver.Firefox(service=service)
 
 # Work version
-service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
-driver = webdriver.Chrome(service=service)
+# service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
+# driver = webdriver.Chrome(service=service)
 
 driver.get('https://web.whatsapp.com/')
 sheets.init()
@@ -167,5 +168,5 @@ while True:
     first_iteration = False
 
     # This is the sleep before checking for msg_CMD it should be about 40 or 50 seconds but i'll see. 
-    time.sleep(20)
+    time.sleep(5)
 
