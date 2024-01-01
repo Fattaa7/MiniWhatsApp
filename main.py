@@ -162,7 +162,7 @@ while True:
     if not first_iteration:
         sheets.readMyMsgAtCol(5)
 
-        for row in range(1,13):
+        for row in range(1,14):
             write_CMD_info = get_chat_and_msg(row)
             if write_CMD_info == None:
                 continue
@@ -170,7 +170,7 @@ while True:
             chat, my_msg, chatName, date = write_CMD_info
     
             click_on_chat(chat,chatName,date)
-            time.sleep(4)
+            time.sleep(2)
             write_to_chat_and_send(my_msg)
             
         # Delete contents from the write_CMD files to wait for another call by writing to it.
@@ -178,7 +178,7 @@ while True:
         sheets.delete_col(5)
 
     
-    for i in range(1, 12):
+    for i in range(1, 14):
         xpath_person = f"/html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[{i}]/div/div/div/div[2]/div[1]/div[1]/div/span"
         xpath_group = f"/html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[{i}]/div/div/div/div[2]/div[1]/div[1]/span"
         xpath_person_msg = f"/html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[{i}]/div/div/div/div[2]/div[2]/div[1]/span/span"
@@ -216,6 +216,8 @@ while True:
         msgTxt = A2F.check_and_convert_to_franco(msg.text)
         senderTxt = A2F.check_and_convert_to_franco(sender.text)
 
+        if msgTxt == '':
+            msgTxt = "Emoji or React."
         elements_list.append(elemTxt)
         message_list.append(msgTxt)
         date_list.append(date.text)

@@ -40,10 +40,23 @@ def convert_to_arabic_franco(text):
         'ه': 'h',
         'و': 'w',
         'ي': 'y',
+        'ى': 'y',
         'ة': 'a',
         'ء': '2',
         '؟': '?',
         'ڤ': 'v',
+        '۱': '1',
+        '۲': '2',
+        '۳': '3',
+        '٤': '4',
+        '٥': '5',
+        '٦': '6',
+        '٧': '7',
+        '۸': '8',
+        '۹': '9',
+        '۰': '0',
+
+
     }
 
     # Convert the input text to Arabic Franco
@@ -60,3 +73,4 @@ def check_and_convert_to_franco(text):
     
     return textawy
     
+

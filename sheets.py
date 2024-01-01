@@ -51,7 +51,7 @@ def write_sheet():
 def readMyMsgAtCol(column_to_search):
 
 
-    for row in range(1,13):
+    for row in range(1,14):
         # Update the sheet with the sorted data
 
         # Loop over each row in the specified column until finding the first non-empty cell
@@ -98,8 +98,8 @@ def readMyMsgAtCol(column_to_search):
     return True
 
 def delete_col(col):
-    empty_strings = [[""] for _ in range(12)]  # Create a list of 12 lists, each containing an empty string
-    range_to_update = f"E1:E12"  # Specify the range for column E
+    empty_strings = [[""] for _ in range(13)]  # Create a list of 12 lists, each containing an empty string
+    range_to_update = f"E1:E13"  # Specify the range for column E
 
     sheet.update(range_to_update, empty_strings)
 
