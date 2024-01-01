@@ -50,53 +50,49 @@ def write_sheet():
 
 def readMyMsgAtCol(column_to_search):
 
-    # Update the sheet with the sorted data
-    
-    # Loop over each row in the specified column until finding the first non-empty cell
-    row = 1
-    cell = None
 
-    # Set the maximum row to iterate over
-    max_row = 12
+    for row in range(1,13):
+        # Update the sheet with the sorted data
 
-    while not cell and row <= max_row:
+        # Loop over each row in the specified column until finding the first non-empty cell
+        cell = None
+
+        # Set the maximum row to iterate over
+
         # Find the cell in the current row
         cell = sheet.cell(row, column_to_search)
 
-        # Check if the cell is empty
+            # Check if the cell is empty
         if not cell.value:
-            cell = None  # Reset cell to None if the cell is empty
-            row += 1  # Move to the next row
-    print(row)
-
-    if row == 13:
-        return False
-
-    # Prepare the information as a string
-    cell_info = f"The first non-empty cell in column {column_to_search} is at row {cell.row}, column {cell.col}, and has the value: {cell.value}"
-
-    cell_chat = sheet.cell(cell.row,2)
-
-    # Print the information to the console
-    print(cell_info)
-
-    # Write the information to a text file
-    # This writes the last text appearing on a chat and the message that we want to send
-    with open("write_CMD.txt", "w", encoding="utf-8") as file:
-        file.write(str(cell_chat.value) + "|" + str(cell.value))
+            print("row " + str(row) + " is empty")
+            continue
 
 
-    cell_chatName = sheet.cell(cell.row,1)
-    cell_date = sheet.cell(cell.row,4)
+        # Prepare the information as a string
+        cell_info = f"The non-empty cell in column {column_to_search} is at row {cell.row}, column {cell.col}, and has the value: {cell.value}"
 
-    # This writes the chat name to a file in case that the last text appearing has some emojis or something weird in it
-    # so we have 2 ways to search for our wanted chat
-    with open("write_CMD_chatName.txt", "w", encoding="utf-8") as file:
-        file.write(str(cell_chatName.value))
+        cell_chat = sheet.cell(cell.row,2)
+
+        # Print the information to the console
+        print(cell_info)
+
+        # Write the information to a text file
+        # This writes the last text appearing on a chat and the message that we want to send
+        with open(f"write_CMD/write_CMD{row}.txt", "w", encoding="utf-8") as file:
+            file.write(str(cell_chat.value) + "|" + str(cell.value))
 
 
-    with open("write_CMD_date.txt", "w", encoding="utf-8") as file:
-        file.write(str(cell_date.value))
+        cell_chatName = sheet.cell(cell.row,1)
+        cell_date = sheet.cell(cell.row,4)
+
+        # This writes the chat name to a file in case that the last text appearing has some emojis or something weird in it
+        # so we have 2 ways to search for our wanted chat
+        with open(f"write_CMD/write_CMD_chatName{row}.txt", "w", encoding="utf-8") as file:
+            file.write(str(cell_chatName.value))
+
+
+        with open(f"write_CMD/write_CMD_date{row}.txt", "w", encoding="utf-8") as file:
+            file.write(str(cell_date.value))
 
 
     return True

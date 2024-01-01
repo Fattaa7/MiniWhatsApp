@@ -1,7 +1,7 @@
 import time
 import sheets
 import sys
-
+import A2F
 # Change console encoding to UTF-8
 
 from selenium import webdriver
@@ -30,16 +30,19 @@ def write_list_to_file(file_path, data_list):
             except UnicodeEncodeError:
                 print("Unable to print element due to encoding issues.", file=output_file)
     
-def get_chat_and_msg():
+def get_chat_and_msg(row):
     chat = ""
     my_msg = ""
-    with open("write_CMD.txt", "r", encoding="utf-8") as file:
+    with open(f"write_CMD/write_CMD{row}.txt", "r", encoding="utf-8") as file:
         line = file.readline()
-        print("My CMD")
-        print(line)
-    with open("write_CMD_chatName.txt", "r", encoding="utf-8") as file:
+        print(f"My CMD {row} is {line}")
+    if line == '':
+        return None
+
+    with open(f"write_CMD/write_CMD_chatName{row}.txt", "r", encoding="utf-8") as file:
         chatName = file.readline()
-    with open("write_CMD_date.txt", "r", encoding="utf-8") as file:
+
+    with open(f"write_CMD/write_CMD_date{row}.txt", "r", encoding="utf-8") as file:
         date = file.readline()
 
     # Split the line into two values at the first |
@@ -116,9 +119,10 @@ def write_to_chat_and_send(my_msg):
     actions.perform()
 
 def reset_WCMD_contents():
-    delete_file_contents("write_CMD.txt")
-    delete_file_contents("write_CMD_chatName.txt")
-    delete_file_contents("write_CMD_date.txt")
+    for row in range(1,13):
+        delete_file_contents(f"write_CMD/write_CMD{row}.txt")
+        delete_file_contents(f"write_CMD/write_CMD_chatName{row}.txt")
+        delete_file_contents(f"write_CMD/write_CMD_date{row}.txt")
 
 
 def delete_file_contents(file_name):
@@ -130,17 +134,17 @@ def delete_file_contents(file_name):
 ##################################################################################################################################
 
 #PC verison
-service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
-firefox_options = Options()
-firefox_options.set_preference("browser.cache.disk.enable", False)
-firefox_options.set_preference("browser.cache.memory.enable", False)
-firefox_options.set_preference("browser.cache.offline.enable", False)
-firefox_options.set_preference("network.http.use-cache", False)
-driver = webdriver.Firefox(service=service, options=firefox_options)
+# service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
+# firefox_options = Options()
+# firefox_options.set_preference("browser.cache.disk.enable", False)
+# firefox_options.set_preference("browser.cache.memory.enable", False)
+# firefox_options.set_preference("browser.cache.offline.enable", False)
+# firefox_options.set_preference("network.http.use-cache", False)
+# driver = webdriver.Firefox(service=service, options=firefox_options)
 
 # Work version
-# service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
-# driver = webdriver.Chrome(service=service)
+service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
+driver = webdriver.Chrome(service=service)
 
 driver.get('https://web.whatsapp.com/')
 sheets.init()
@@ -156,20 +160,22 @@ while True:
     date_list = []
 
     if not first_iteration:
-        msg_available = sheets.readMyMsgAtCol(5)
+        sheets.readMyMsgAtCol(5)
 
-        if msg_available:
-            write_CMD_info = get_chat_and_msg()
-    
+        for row in range(1,13):
+            write_CMD_info = get_chat_and_msg(row)
+            if write_CMD_info == None:
+                continue
             #chat header - the message to be sent - person's name - date
             chat, my_msg, chatName, date = write_CMD_info
     
             click_on_chat(chat,chatName,date)
             time.sleep(4)
             write_to_chat_and_send(my_msg)
-            # Delete contents from the write_CMD files to wait for another call by writing to it.
-            reset_WCMD_contents()
-            sheets.delete_col(5)
+            
+        # Delete contents from the write_CMD files to wait for another call by writing to it.
+        reset_WCMD_contents()
+        sheets.delete_col(5)
 
     
     for i in range(1, 12):
@@ -205,10 +211,15 @@ while True:
         date = driver.find_element(By.XPATH, xpath_date)
 
         # Get the text value of the element and append it to the list
-        elements_list.append(element.text)
-        message_list.append(msg.text)
+
+        elemTxt = A2F.check_and_convert_to_franco(element.text)
+        msgTxt = A2F.check_and_convert_to_franco(msg.text)
+        senderTxt = A2F.check_and_convert_to_franco(sender.text)
+
+        elements_list.append(elemTxt)
+        message_list.append(msgTxt)
         date_list.append(date.text)
-        sender_list.append(sender.text)
+        sender_list.append(senderTxt)
 
     write_list_to_file("output.txt", elements_list)
     write_list_to_file("msg.txt", message_list)
