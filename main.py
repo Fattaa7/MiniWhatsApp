@@ -114,8 +114,8 @@ def scroll_into_view(element):
 
 def write_to_chat_and_send(my_msg):
     actions = ActionChains(driver)
-    #actions.send_keys(my_msg, Keys.RETURN)
-    actions.send_keys(my_msg)
+    actions.send_keys(my_msg, Keys.RETURN)
+    #actions.send_keys(my_msg)
     actions.perform()
 
 def reset_WCMD_contents():
@@ -233,7 +233,7 @@ while True:
     first_iteration = False
 
     # This is the sleep before checking for msg_CMD it should be about 40 or 50 seconds but i'll see. 
-    time.sleep(5)
+    time.sleep(10)
 
 
 
