@@ -1,5 +1,8 @@
 import time
 import sheets
+import sys
+
+# Change console encoding to UTF-8
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -9,8 +12,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys  # Import Keys
+from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.firefox.options import Options
+
+
 
 #######     https://docs.google.com/spreadsheets/d/10yJZ7lQGKxqKY0664oF3XAvDDcZvqvwv5eXNia05g7A/edit#gid=0
+
+
+sys.stdout.reconfigure(encoding='utf-8')
 
 def write_list_to_file(file_path, data_list):
     with open(file_path, "w", encoding="utf-8") as output_file:
@@ -25,6 +35,8 @@ def get_chat_and_msg():
     my_msg = ""
     with open("write_CMD.txt", "r", encoding="utf-8") as file:
         line = file.readline()
+        print("My CMD")
+        print(line)
     with open("write_CMD_chatName.txt", "r", encoding="utf-8") as file:
         chatName = file.readline()
     with open("write_CMD_date.txt", "r", encoding="utf-8") as file:
@@ -32,34 +44,69 @@ def get_chat_and_msg():
 
     # Split the line into two values at the first |
     values = line.strip().split('|', 1)
-    chat, my_msg = values
+    chat, my_msg_with_line = values
+    my_msg = my_msg_with_line.split('\n', 1)[0]
 
-    print("Variable 1:", chat)
+    print("Variable 1:", repr(chat))
     print("Variable 2:", my_msg)
 
     return chat, my_msg, chatName, date
 
-
-def click_on_chat(chat,chatName,date):
+def click_on_chat(chat, chatName, date):
     # We then try to find the element using the chat name instead
-    # this too could fail if there is emojis in the name
-    # or if the name is in arabic letter -- still not sure about this
+    # this too could fail if there are emojis in the name
+    # or if the name is in Arabic letters -- still not sure about this
     try:
         xpath_expression = f"//span[@title='{chatName}']"
-        driver.find_element(By.XPATH, xpath_expression).click()
+        chat_element = driver.find_element(By.XPATH, xpath_expression)
+        try:
+            chat_element.click()
+        except ElementClickInterceptedException:
+            try:
+                scroll_into_view(chat_element)
+                chat_element.click()
+            except ElementClickInterceptedException:
+                print("Unclickable for some reason")
+
 
     except NoSuchElementException:
         # Try to find the element using the last text appearing on chat from outside
-        # this could fail when there is emojis in the text
+        # this could fail when there are emojis in the text
         try:
             xpath_expression = f"//span[text()='{chat}']"
-            driver.find_element(By.XPATH, xpath_expression).click()
+            chat_element = driver.find_element(By.XPATH, xpath_expression)
+            try:
+                chat_element.click()
+            except ElementClickInterceptedException:
+                try:
+                    scroll_into_view(chat_element)
+                    chat_element.click()
+                except ElementClickInterceptedException:
+                    print("Unclickable for some reason")
 
-        # for a third try we try to find it using the date that we have stored for the last message send from our friend
+
+        # for a third try, we try to find it using the date that we have stored for the last message sent from our friend
         # this too could have some problems if there are multiple last messages with the same time
         except NoSuchElementException:
-            xpath_expression = f"//span[text()='{date}']"
-            driver.find_element(By.XPATH, xpath_expression).click()
+            try:
+                xpath_expression = f"//span[text()='{date}']"
+                chat_element = driver.find_element(By.XPATH, xpath_expression)
+                try:
+                    chat_element.click()
+                except ElementClickInterceptedException:
+                    try:
+                        scroll_into_view(chat_element)
+                        chat_element.click()
+                    except ElementClickInterceptedException:
+                        print("Unclickable for some reason")
+            except ElementClickInterceptedException:
+                print("something went wrong during writing")
+
+
+def scroll_into_view(element):
+    #driver.execute_script("arguments[0].scrollIntoView();", element)
+    driver.execute_script("arguments[0].scrollIntoView({block: 'end', inline: 'nearest'});", element)
+
 
 
 def write_to_chat_and_send(my_msg):
@@ -84,7 +131,12 @@ def delete_file_contents(file_name):
 
 #PC verison
 service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
-driver = webdriver.Firefox(service=service)
+firefox_options = Options()
+firefox_options.set_preference("browser.cache.disk.enable", False)
+firefox_options.set_preference("browser.cache.memory.enable", False)
+firefox_options.set_preference("browser.cache.offline.enable", False)
+firefox_options.set_preference("network.http.use-cache", False)
+driver = webdriver.Firefox(service=service, options=firefox_options)
 
 # Work version
 # service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
@@ -170,3 +222,11 @@ while True:
     # This is the sleep before checking for msg_CMD it should be about 40 or 50 seconds but i'll see. 
     time.sleep(5)
 
+
+
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[9]/div/div/div/div[2]/div[2]/div[1]/span/span[2]
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[7]/div/div/div/div[2]/div[2]/div[1]/span/span[2]
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[5]/div/div/div/div[2]/div[2]/div[1]/span/span
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[10]/div/div/div/div[2]/div[2]/div[1]/span/span
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[6]/div/div/div/div[2]/div[2]/div[1]/span/span[3]
+# /html/body/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div/div/div[6]/div/div/div/div[2]/div[1]/div[1]/span
