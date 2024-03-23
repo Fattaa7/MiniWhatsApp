@@ -64,15 +64,15 @@ def click_on_chat(chat, chatName, date):
         chat_element = driver.find_element(By.XPATH, xpath_expression)
         try:
             chat_element.click()
-        except ElementClickInterceptedException:
+        except:
             try:
                 scroll_into_view(chat_element)
                 chat_element.click()
-            except ElementClickInterceptedException:
+            except:
                 print("Unclickable for some reason")
 
 
-    except NoSuchElementException:
+    except:
         # Try to find the element using the last text appearing on chat from outside
         # this could fail when there are emojis in the text
         try:
@@ -80,29 +80,29 @@ def click_on_chat(chat, chatName, date):
             chat_element = driver.find_element(By.XPATH, xpath_expression)
             try:
                 chat_element.click()
-            except ElementClickInterceptedException:
+            except:
                 try:
                     scroll_into_view(chat_element)
                     chat_element.click()
-                except ElementClickInterceptedException:
+                except:
                     print("Unclickable for some reason")
 
 
         # for a third try, we try to find it using the date that we have stored for the last message sent from our friend
         # this too could have some problems if there are multiple last messages with the same time
-        except NoSuchElementException:
+        except:
             try:
                 xpath_expression = f"//span[text()='{date}']"
                 chat_element = driver.find_element(By.XPATH, xpath_expression)
                 try:
                     chat_element.click()
-                except ElementClickInterceptedException:
+                except:
                     try:
                         scroll_into_view(chat_element)
                         chat_element.click()
-                    except ElementClickInterceptedException:
+                    except:
                         print("Unclickable for some reason")
-            except ElementClickInterceptedException:
+            except:
                 print("something went wrong during writing")
 
 
@@ -134,17 +134,21 @@ def delete_file_contents(file_name):
 ##################################################################################################################################
 
 #PC verison
-# service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
-# firefox_options = Options()
-# firefox_options.set_preference("browser.cache.disk.enable", False)
-# firefox_options.set_preference("browser.cache.memory.enable", False)
-# firefox_options.set_preference("browser.cache.offline.enable", False)
-# firefox_options.set_preference("network.http.use-cache", False)
-# driver = webdriver.Firefox(service=service, options=firefox_options)
+service =  Service(executable_path=r"C:\Users\ahmed\Desktop\WhatsScrap\MiniWhatsApp\geckodriver.exe")
+firefox_options = Options()
+firefox_options.set_preference("browser.cache.disk.enable", False)
+firefox_options.set_preference("browser.cache.memory.enable", False)
+firefox_options.set_preference("browser.cache.offline.enable", False)
+firefox_options.set_preference("network.http.use-cache", False)
+driver = webdriver.Firefox(service=service, options=firefox_options)
+
+
+reset_WCMD_contents()
+
 
 # Work version
-service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
-driver = webdriver.Chrome(service=service)
+# service = Service(executable_path=r"C:\Users\aabdelf5\Desktop\PersonalProjects\MiniWhatsApp\chromedriver.exe")
+# driver = webdriver.Chrome(service=service)
 
 driver.get('https://web.whatsapp.com/')
 sheets.init()
